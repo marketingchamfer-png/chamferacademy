@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Chamfer Academy</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: plataforma de estudo — faixa azul da marca no topo, índice de módulos à esquerda, uma aula por vez à direita */
+:root{
+  --bg:#FFFFFF; --panel:#F2F2F2; --ink:#333333; --ink-2:#5B6573; --line:#DCE1E8;
+  --brand:#003366; --band:#003366; --on-band:#FFFFFF; --brand-soft:#E8EEF5;
+  --accent:#F5A800; --accent-ink:#8A5E00; --accent-soft:#FFF4D6;
+  --good:#1F7A4D; --good-soft:#E3F3EA; --bad:#B3261E; --bad-soft:#FBE7E5;
+  --f-display:'Montserrat',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --side:300px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1825; --panel:#132235; --ink:#E4E9F0; --ink-2:#9DABBD; --line:#24364D;
+  --brand:#8DB4DE; --band:#0A2747; --on-band:#FFFFFF; --brand-soft:#1A2E47;
+  --accent:#F5A800; --accent-ink:#F5B829; --accent-soft:#2E2610;
+  --good:#5CC08C; --good-soft:#15301F; --bad:#F08B84; --bad-soft:#3A1A18; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1825; --panel:#132235; --ink:#E4E9F0; --ink-2:#9DABBD; --line:#24364D;
+  --brand:#8DB4DE; --band:#0A2747; --on-band:#FFFFFF; --brand-soft:#1A2E47;
+  --accent:#F5A800; --accent-ink:#F5B829; --accent-soft:#2E2610;
+  --good:#5CC08C; --good-soft:#15301F; --bad:#F08B84; --bad-soft:#3A1A18; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Topo */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--band);color:var(--on-band);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.top-in{display:flex;align-items:center;gap:16px;min-height:60px;max-width:1280px;margin:0 auto}
+.brand{font-family:var(--f-display);font-weight:800;letter-spacing:.14em;font-size:15px;text-transform:uppercase;white-space:nowrap;background:none;border:0;padding:0}
+.brand b{color:var(--accent);font-weight:800}
+.prog{margin-left:auto;display:flex;align-items:center;gap:12px;font-size:13px;min-width:0}
+.prog-bar{width:160px;height:6px;border-radius:3px;background:rgba(255,255,255,.18);overflow:hidden}
+.prog-bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .4s}
+.prog span{font-variant-numeric:tabular-nums;white-space:nowrap}
+.menu-btn{display:none;background:rgba(255,255,255,.12);border:0;border-radius:6px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--on-band)}
+
+/* Grade principal */
+.shell{display:grid;grid-template-columns:var(--side) minmax(0,1fr);max-width:1280px;margin:0 auto;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.side{position:sticky;top:calc(60px + env(safe-area-inset-top,0px));align-self:start;max-height:calc(100vh - 60px);overflow:auto;
+  padding-block:24px;padding-right:24px;border-right:1px solid var(--line)}
+.side h2{font-family:var(--f-display);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin:0 0 12px}
+.mod{margin-bottom:6px}
+.mod-h{display:flex;align-items:baseline;gap:10px;width:100%;text-align:left;background:none;border:0;padding:10px 8px;border-radius:6px}
+.mod-h:hover{background:var(--panel)}
+.mod-n{font-family:var(--f-display);font-weight:800;color:var(--accent-ink);font-size:13px;font-variant-numeric:tabular-nums}
+.mod-t{font-family:var(--f-display);font-weight:700;font-size:14px;color:var(--brand);flex:1;line-height:1.3}
+.mod-c{font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.les{list-style:none;margin:0 0 8px;padding:0 0 0 22px}
+.les button{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;background:none;border:0;padding:7px 8px;border-radius:6px;font-size:14px;line-height:1.35;color:var(--ink)}
+.les button:hover{background:var(--panel)}
+.les button[aria-current="true"]{background:var(--brand-soft);color:var(--brand);font-weight:600}
+.dot{flex:none;width:16px;height:16px;margin-top:1px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center}
+.done .dot{background:var(--good);border-color:var(--good)}
+.done .dot::after{content:"";width:7px;height:4px;border:2px solid var(--bg);border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.les .quiz-i{font-style:normal;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink);font-weight:600}
+
+/* Conteúdo */
+.main{padding-block:32px 64px;padding-left:48px;min-width:0}
+.crumb{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);font-weight:600;margin-bottom:10px}
+.crumb b{color:var(--accent-ink)}
+.lesson{max-width:720px}
+.lesson h1{font-family:var(--f-display);font-weight:800;color:var(--brand);font-size:clamp(26px,3.4vw,36px);line-height:1.15;margin:0 0 8px;text-wrap:balance}
+.meta{font-size:13px;color:var(--ink-2);margin-bottom:28px}
+.lesson h3{font-family:var(--f-display);font-weight:700;color:var(--brand);font-size:19px;margin:36px 0 10px;text-wrap:balance}
+.lesson h4{font-family:var(--f-display);font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin:20px 0 8px}
+.lesson p{margin:0 0 14px}
+.lead{font-size:18px;line-height:1.55;color:var(--ink)}
+.lesson ul.b{margin:0 0 16px;padding-left:20px}
+.lesson ul.b li{margin:4px 0}
+.lesson ul.b li::marker{color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 18px;padding:0;list-style:none}
+.chips li{border:1px solid var(--line);border-radius:999px;padding:5px 14px;font-size:14px;background:var(--bg)}
+.chips.caps li{font-variant-numeric:tabular-nums;font-weight:600;color:var(--brand);border-color:var(--brand-soft);background:var(--brand-soft)}
+.chips.big li{font-family:var(--f-display);font-weight:700;font-size:16px;padding:8px 18px;color:var(--brand)}
+blockquote{margin:24px 0;padding:20px 24px;background:var(--brand-soft);border-radius:8px;font-family:var(--f-display);font-weight:700;font-size:20px;line-height:1.4;color:var(--brand)}
+.note{display:flex;gap:12px;margin:18px 0;padding:14px 16px;background:var(--accent-soft);border-radius:8px;font-size:15px}
+.note strong{color:var(--accent-ink);font-family:var(--f-display);font-size:12px;letter-spacing:.1em;text-transform:uppercase;flex:none;padding-top:2px}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0 20px;padding:0;list-style:none;counter-reset:f}
+.flow li{counter-increment:f;display:flex;align-items:center;gap:6px;font-size:14px}
+.flow li span{border:1px solid var(--line);border-radius:6px;padding:6px 12px;background:var(--panel)}
+.flow li:not(:last-child)::after{content:"→";color:var(--accent-ink);font-weight:700}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:12px;margin:8px 0 20px}
+.card{border:1px solid var(--line);border-radius:8px;padding:16px;min-width:0}
+.card h5{font-family:var(--f-display);font-size:15px;font-weight:700;color:var(--brand);margin:0 0 6px}
+.card p{font-size:14px;margin:0 0 8px;color:var(--ink)}
+.card ul{margin:0;padding-left:18px;font-size:14px}
+.card ul li::marker{color:var(--accent)}
+.sw{display:flex;gap:12px;align-items:flex-start}
+.sw i{flex:none;width:38px;height:38px;border-radius:8px;border:1px solid var(--line)}
+.sw-branco{background:#FFFFFF}.sw-preto{background:#1B1B1B}
+.sw-natural{background:linear-gradient(135deg,#EDEBE3,#D9D6CB);opacity:.85}
+.sw-random{background:repeating-conic-gradient(#CBD3DD 0 25%,#FFFFFF 0 50%) 0 0/12px 12px}
+.sw-pig{background:conic-gradient(#E3342F,#F5A800,#38A169,#3182CE,#805AD5,#E3342F)}
+.sw-pcr{background:radial-gradient(circle at 30% 30%,#9AA5A0 2px,transparent 3px) 0 0/9px 9px,#C7CEC9}
+.sw-pantone{background:linear-gradient(#003366 0 33%,#F5A800 33% 66%,#C2185B 66%)}
+.tbl{overflow-x:auto;margin:8px 0 20px}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--f-display);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+td:first-child{font-weight:600;color:var(--brand)}
+.timeline{list-style:none;margin:8px 0 20px;padding:0;display:grid;gap:10px}
+.timeline li{display:grid;grid-template-columns:130px 1fr;gap:16px;align-items:baseline;padding:12px 16px;border:1px solid var(--line);border-radius:8px}
+.timeline b{font-family:var(--f-display);color:var(--accent-ink);font-variant-numeric:tabular-nums}
+
+/* Rodapé da aula */
+.foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:40px;padding-top:24px;border-top:1px solid var(--line);max-width:720px}
+.btn{border-radius:8px;padding:11px 18px;font-weight:600;font-size:15px;border:1px solid var(--line);background:var(--bg)}
+.btn:hover{border-color:var(--brand)}
+.btn.primary{background:var(--band);border-color:var(--band);color:var(--on-band)}
+.btn.cta{background:var(--accent);border-color:var(--accent);color:#1F1A0C}
+.btn.ok{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+.btn[disabled]{opacity:.4;cursor:default}
+.spacer{flex:1}
+
+/* Início */
+.hero{background:var(--band);color:var(--on-band);border-radius:12px;padding:40px clamp(20px,4vw,48px);margin-bottom:32px;max-width:900px}
+.hero .eb{font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--accent)}
+.hero h1{font-family:var(--f-display);font-weight:800;font-size:clamp(30px,5vw,48px);line-height:1.08;margin:10px 0 14px;text-wrap:balance;color:var(--on-band)}
+.hero p{max-width:56ch;margin:0 0 24px;opacity:.9}
+.stats{display:flex;flex-wrap:wrap;gap:28px;margin-bottom:28px}
+.stats div{font-size:13px;opacity:.85}
+.stats b{display:block;font-family:var(--f-display);font-size:26px;font-weight:800;opacity:1;font-variant-numeric:tabular-nums}
+.mods{display:grid;gap:12px;max-width:900px}
+.mcard{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:16px;align-items:center;text-align:left;width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.mcard:hover{border-color:var(--brand)}
+.mcard .n{font-family:var(--f-display);font-weight:800;font-size:28px;color:var(--accent-ink);font-variant-numeric:tabular-nums}
+.mcard .h{display:block;font-family:var(--f-display);font-size:17px;font-weight:700;color:var(--brand);margin:0 0 2px}
+.mcard .p{display:block;font-size:14px;color:var(--ink-2)}
+.ring{width:44px;height:44px}
+.ring circle{fill:none;stroke-width:4}
+.ring .bg{stroke:var(--line)}.ring .fg{stroke:var(--good);stroke-linecap:round;transform:rotate(-90deg);transform-origin:center}
+.ring text{font-size:11px;font-weight:600;fill:var(--ink-2);font-family:var(--f-body)}
+
+/* Revisão */
+.q{border:1px solid var(--line);border-radius:10px;padding:20px;margin:0 0 16px}
+.q h5{font-family:var(--f-display);font-size:16px;font-weight:700;color:var(--brand);margin:0 0 14px;line-height:1.4}
+.q h5 small{display:block;font-family:var(--f-body);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);font-weight:600;margin-bottom:4px}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:10px 14px;font-size:15px}
+.opt:hover:not([disabled]){border-color:var(--brand)}
+.opt.right{border-color:var(--good);background:var(--good-soft);color:var(--good);font-weight:600}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
+.opt[disabled]{cursor:default}
+.exp{margin:12px 0 0;font-size:14px;color:var(--ink-2)}
+.score{font-family:var(--f-display);font-weight:700;color:var(--brand);margin:8px 0 0}
+
+.scrim{display:none}
+@media (max-width:900px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .main{padding-left:0;padding-block:24px 48px}
+  .menu-btn{display:inline-block}
+  .prog-bar{width:72px}
+  .side{position:fixed;z-index:30;top:0;bottom:0;left:0;width:min(86vw,340px);max-height:none;background:var(--bg);
+    padding:calc(20px + env(safe-area-inset-top,0px)) 16px calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+    transform:translateX(-105%);transition:transform .25s;border-right:1px solid var(--line)}
+  .side.open{transform:none}
+  .scrim.open{display:block;position:fixed;inset:0;z-index:25;background:rgba(0,0,0,.4)}
+  .timeline li{grid-template-columns:1fr;gap:2px}
+  .mcard{grid-template-columns:40px minmax(0,1fr) auto;padding:14px}
+}
+@media (max-width:480px){.prog span{display:none}.brand{letter-spacing:.08em;font-size:13px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <button class="menu-btn" id="menuBtn" aria-controls="side" aria-expanded="false">Conteúdo</button>
+    <button class="brand" id="homeBtn" aria-label="Início da trilha">Chamfer <b>Academy</b></button>
+    <div class="prog" aria-label="Progresso da trilha">
+      <div class="prog-bar"><i id="progFill"></i></div>
+      <span id="progTxt">0% concluído</span>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+  <nav class="side" id="side" aria-label="Módulos e aulas"></nav>
+  <div class="scrim" id="scrim"></div>
+  <main class="main" id="main"></main>
+</div>
+
+<script>
+const COURSE = [
+{ id:'1', t:'Chamfer institucional', d:'Quem somos, onde estamos e o que nos move.', lessons:[
+  { id:'1-1', t:'40 anos transformando plástico em soluções', b:[
+    ['lead','Há 40 anos, a Chamfer transforma plástico em soluções que fazem parte do dia a dia de diferentes mercados e ajudam empresas a apresentar, proteger, transportar e comercializar seus produtos.'],
+    ['p','Ao longo de quatro décadas, construímos uma trajetória marcada pela evolução, pelo desenvolvimento de novas soluções e pela proximidade com nossos clientes.'],
+    ['p','Hoje, a Chamfer é uma das empresas de destaque na América Latina com embalagens plásticas rígidas, com um portfólio amplo e diversificado, desenvolvido para atender diferentes necessidades e segmentos da indústria.'],
+    ['h','Um parque industrial em São Paulo'],
+    ['p','Nossa operação está sediada em São Paulo, em um parque industrial estruturado para reunir diferentes etapas da nossa operação e proporcionar maior integração entre as áreas.'],
+    ['p','A estrutura da Chamfer reúne:'],
+    ['chips',['Tecnologia','Capacidade produtiva','Desenvolvimento','Controle de qualidade','Logística','Equipes especializadas']],
+    ['p','Uma operação preparada para atender às demandas de um mercado cada vez mais exigente.']
+  ]},
+  { id:'1-2', t:'Um portfólio completo de embalagens', b:[
+    ['lead','Quando falamos em Chamfer, falamos em variedade.'],
+    ['p','Nosso portfólio contempla diferentes famílias de embalagens plásticas rígidas, incluindo:'],
+    ['chips-big',['Potes','Baldes','Frascos']],
+    ['p','São diferentes formatos, capacidades, materiais, cores, sistemas de fechamento e possibilidades de personalização.'],
+    ['p','Do pote de menor capacidade aos baldes de grandes volumes, desenvolvemos soluções para diferentes aplicações e necessidades industriais.'],
+    ['h','Segmentos atendidos'],
+    ['p','Essa amplitude permite que a Chamfer atue em diversos segmentos, como:'],
+    ['chips',['Alimentos','Sorvetes e Açaí','Conservas','Doces e Pastas','Cosméticos','Pet','Tintas','Químicos','Construção','Agro','Lubrificantes','Food Service']],
+    ['p','Entre outros.']
+  ]},
+  { id:'1-3', t:'Mais do que uma embalagem', b:[
+    ['lead','Uma embalagem não é apenas um recipiente. Ela precisa cumprir uma função.'],
+    ['p','Precisa proteger o produto, facilitar seu armazenamento e transporte, atender aos requisitos da aplicação e, muitas vezes, também contribuir para a apresentação e o posicionamento da marca.'],
+    ['cards',[{t:'Proteger',d:'Preservar o produto acondicionado.'},{t:'Armazenar e transportar',d:'Facilitar a logística do cliente.'},{t:'Atender à aplicação',d:'Cumprir os requisitos técnicos do uso.'},{t:'Posicionar a marca',d:'Contribuir para a apresentação do produto.'}]],
+    ['p','Por isso, nosso trabalho vai além da fabricação de uma peça plástica.'],
+    ['p','Buscamos desenvolver soluções em embalagens que façam sentido para o produto, para o processo do cliente e para o mercado em que ele atua.']
+  ]},
+  { id:'1-4', t:'Tecnologia e personalização', b:[
+    ['lead','A Chamfer possui diferentes possibilidades de personalização para transformar uma embalagem em uma extensão da marca do cliente.'],
+    ['p','Entre elas estão:'],
+    ['chips-big',['IML','Serigrafia','Acabamento Liso']],
+    ['p','Cada solução possui características próprias e pode ser indicada de acordo com o projeto, aplicação, quantidade, identidade visual e necessidade do cliente.'],
+    ['p','O resultado é uma embalagem que não apenas acondiciona um produto, mas também ajuda a comunicar sua marca.'],
+    ['note','Cada uma dessas soluções é detalhada no Módulo 2, na aula Personalização.']
+  ]},
+  { id:'1-5', t:'Nosso propósito', b:[
+    ['p','Tudo isso está conectado à essência da Chamfer:'],
+    ['quote','“Transformar o plástico em produtos inovadores para contribuir com a realização do sonho do cliente.”'],
+    ['p','Esse propósito representa algo maior do que produzir embalagens.'],
+    ['p','Representa entender que, por trás de cada pote, balde ou frasco, existe uma empresa, uma marca, um produto e um projeto que precisa chegar ao mercado.'],
+    ['h','40 anos de história. Um futuro de evolução.'],
+    ['p','Bem-vindo à Chamfer Academy. Agora, vamos conhecer a Chamfer por dentro.']
+  ]}
+ ], quiz:[
+  {q:'Há quantos anos a Chamfer transforma plástico em soluções?',o:['20 anos','30 anos','40 anos','50 anos'],a:2,e:'São quatro décadas de trajetória.'},
+  {q:'Onde está sediada a operação da Chamfer?',o:['Curitiba','São Paulo','Belo Horizonte','Porto Alegre'],a:1,e:'A operação fica em um parque industrial em São Paulo.'},
+  {q:'Quais são as famílias de embalagens plásticas rígidas do portfólio?',o:['Garrafas, sacolas e filmes','Potes, baldes e frascos','Caixas, tubos e bisnagas','Latas, potes e filmes'],a:1,e:'Potes, baldes e frascos, em diferentes formatos e capacidades.'},
+  {q:'Qual frase resume o propósito da Chamfer?',o:['Produzir o maior volume de embalagens do mercado','Transformar o plástico em produtos inovadores para contribuir com a realização do sonho do cliente','Oferecer o menor preço em embalagens plásticas','Fabricar peças plásticas sob encomenda'],a:1,e:'O propósito conecta o produto ao projeto do cliente.'}
+ ]},
+
+{ id:'2', t:'Produtos', d:'Matéria-prima, propriedades, cores e personalização.', lessons:[
+  { id:'2-1', t:'Matéria-prima', b:[
+    ['lead','A escolha da matéria-prima é um dos fatores mais importantes no desenvolvimento de uma embalagem plástica. Ela influencia diretamente a resistência, a aparência, a aplicação, o custo e o desempenho do produto.'],
+    ['p','Na Chamfer, os materiais mais utilizados são o Polipropileno (PP) e o Polietileno de Alta Densidade (PEAD).'],
+    ['p','Cada material possui características específicas e deve ser escolhido de acordo com a necessidade do cliente e da aplicação.'],
+    ['h','PP – Polipropileno'],
+    ['p','O PP é um dos plásticos mais utilizados pela Chamfer por combinar boa resistência mecânica, baixo peso e excelente custo-benefício. É indicado principalmente para embalagens destinadas ao mercado alimentício.'],
+    ['split',[
+      {t:'Principais características',items:['Excelente acabamento superficial','Boa rigidez','Baixo peso','Boa resistência ao impacto','Permite excelente personalização com IML e serigrafia','Boa resistência ao calor']},
+      {t:'Principais aplicações',items:['Sorvetes','Açaí','Conservas','Molhos','Doces','Temperos','Produtos alimentícios em geral']}
+    ]]
+  ]},
+  { id:'2-2', t:'Propriedades dos materiais', b:[
+    ['h','Resistência mecânica'],
+    ['p','Refere-se à capacidade da embalagem suportar impactos, empilhamento, transporte e manuseio sem sofrer deformações ou quebras.'],
+    ['p','Uma embalagem com boa resistência mecânica reduz perdas durante o transporte e aumenta a segurança do produto.'],
+    ['h','Resistência química'],
+    ['p','É a capacidade da embalagem resistir ao contato com diferentes substâncias químicas sem sofrer alterações em sua estrutura. Esse fator é essencial para embalagens destinadas aos segmentos:'],
+    ['chips',['Químico','Lubrificantes','Agro','Construção Civil']],
+    ['h','Contato com alimentos'],
+    ['p','As embalagens destinadas ao mercado alimentício são desenvolvidas utilizando matérias-primas adequadas para contato com alimentos, seguindo os requisitos da legislação aplicável.'],
+    ['p','Isso garante segurança ao consumidor e preserva as características do produto acondicionado.'],
+    ['h','Congelamento'],
+    ['p','Nem toda embalagem apresenta o mesmo desempenho em baixas temperaturas.'],
+    ['cards',[{t:'PEAD',d:'Possui excelente comportamento em congelamento intenso.'},{t:'PP',d:'Também pode ser utilizado em aplicações congeladas, desde que o projeto da embalagem seja adequado à aplicação.'}]],
+    ['note','Sempre avalie a necessidade do cliente antes de recomendar um produto.'],
+    ['h','Micro-ondas'],
+    ['p','Diversas embalagens produzidas em PP podem suportar aquecimento em forno micro-ondas, desde que tenham sido projetadas para essa finalidade e utilizadas conforme as recomendações.'],
+    ['note','Sempre confirme a especificação técnica do produto antes de informar essa característica ao cliente.'],
+    ['h','Reciclabilidade'],
+    ['p','Tanto o PP quanto o PEAD são materiais recicláveis. Após o descarte correto, podem ser reprocessados e transformados em novos produtos, contribuindo para a economia circular.'],
+    ['p','A reciclabilidade depende também do descarte adequado e da infraestrutura disponível para coleta e reciclagem.']
+  ]},
+  { id:'2-3', t:'Cores', b:[
+    ['lead','A cor da embalagem influencia diretamente a identidade visual do produto, a percepção de qualidade e o posicionamento da marca.'],
+    ['p','A Chamfer oferece diferentes opções de cores para atender às necessidades de cada cliente.'],
+    ['swatch',{sw:'branco',t:'Branco',d:'É a cor mais utilizada pela indústria.'}],
+    ['split',[
+      {t:'Vantagens',items:['Excelente aparência','Maior destaque para rótulos','Melhor reprodução de cores no IML','Aspecto de limpeza']},
+      {t:'Indicações',items:['Alimentos','Sorvetes','Açaí','Conservas','Cosméticos']}
+    ]],
+    ['swatch',{sw:'preto',t:'Preto',d:'Muito utilizado quando se deseja transmitir sofisticação ou esconder resíduos e manchas durante o uso.'}],
+    ['sub','Aplicações'],
+    ['chips',['Cosméticos','Produtos Premium','Segmento químico','Produtos automotivos']],
+    ['swatch',{sw:'natural',t:'Natural',d:'É a cor original da matéria-prima, sem adição de pigmentos. Possui aparência levemente translúcida e é bastante utilizada quando o cliente deseja reduzir custos ou visualizar parcialmente o conteúdo.'}],
+    ['swatch',{sw:'random',t:'Random',d:'Material transparente que permite visualizar o produto acondicionado. É indicado para aplicações em que a aparência do produto agrega valor à embalagem.'}],
+    ['sub','Muito utilizado em'],
+    ['chips',['Doces','Conservas','Alimentos Premium']]
+  ]},
+  { id:'2-4', t:'PCR, pigmentadas e Pantone', b:[
+    ['swatch',{sw:'pcr',t:'PCR – Plástico Reciclado Pós-Consumo',d:'PCR significa Post-Consumer Recycled, ou plástico reciclado pós-consumo.'}],
+    ['p','É o material obtido a partir de produtos plásticos que já foram utilizados pelo consumidor, coletados após o descarte e posteriormente submetidos a processos de separação, limpeza, moagem, transformação e reprocessamento para voltar a ser matéria-prima.'],
+    ['sub','Em outras palavras'],
+    ['flow',['Produto utilizado','Descarte','Coleta','Separação','Reciclagem','Matéria-prima reciclada','Novo produto']],
+    ['p','O PCR faz parte do conceito de economia circular, pois busca manter o material em uso por mais tempo e reduzir a necessidade de utilização exclusiva de matéria-prima virgem.'],
+    ['h','Decreto nº 12.688/2025'],
+    ['p','A discussão sobre PCR ganhou ainda mais importância a partir de 2026. O Decreto nº 12.688/2025 instituiu um sistema de logística reversa específico para embalagens plásticas e estabeleceu, entre outros pontos, metas de recuperação de embalagens e de conteúdo reciclado.'],
+    ['p','O decreto determina que as metas de conteúdo reciclado sejam obrigatórias:'],
+    ['timeline',[['Janeiro de 2026','Empresas de grande porte'],['Julho de 2026','Empresas de pequeno e médio porte']]],
+    ['swatch',{sw:'pig',t:'Pigmentadas',d:'São embalagens produzidas em cores específicas conforme a necessidade do cliente. Permitem fortalecer a identidade visual da marca e diferenciar produtos ou sabores.'}],
+    ['swatch',{sw:'pantone',t:'Pantone',d:'Quando o cliente deseja uma cor exclusiva, a Chamfer pode desenvolver pigmentação baseada na escala Pantone. Isso garante maior padronização entre diferentes lotes de produção.'}],
+    ['note','O desenvolvimento de cor Pantone depende de validação técnica e de volume mínimo de produção.']
+  ]},
+  { id:'2-5', t:'Personalização', b:[
+    ['lead','Além da proteção do produto, a embalagem também exerce importante papel na comunicação da marca.'],
+    ['p','A Chamfer oferece diferentes formas de personalização, permitindo atender desde pequenas produções até grandes linhas industriais.'],
+    ['h','Embalagem lisa'],
+    ['p','É a embalagem produzida sem qualquer impressão. O cliente realiza a identificação posteriormente utilizando rótulos, etiquetas, sleeves ou impressão própria.'],
+    ['sub','Vantagens'],
+    ['ul',['Menor custo','Produção mais rápida','Menor pedido mínimo','Flexibilidade para diferentes produtos']],
+    ['h','Serigrafia'],
+    ['p','A serigrafia consiste na impressão direta sobre a embalagem utilizando tinta especial. É indicada principalmente para embalagens de conservas, temperos, produtos químicos e aplicações que não exigem impressão em toda a superfície.'],
+    ['split',[
+      {t:'Vantagens',items:['Excelente custo-benefício','Boa resistência','Permite personalização em diversas cores','Não utiliza rótulo']},
+      {t:'Limitações',items:['Área de impressão limitada','Menor riqueza de detalhes em comparação ao IML']}
+    ]],
+    ['h','In Mold Label (IML)'],
+    ['p','No processo In Mold Label, o rótulo é inserido dentro do molde antes da injeção do plástico. Durante a fabricação, o rótulo funde-se à embalagem, tornando-se parte integrante do produto.'],
+    ['sub','Vantagens'],
+    ['ul',['Excelente acabamento','Alta definição de impressão','Resistência à água','Resistência ao atrito','Maior valorização da embalagem','Excelente apresentação no ponto de venda']],
+    ['p','É a solução ideal para marcas que desejam agregar valor ao produto.'],
+    ['h','Comparativo rápido'],
+    ['table',['','Lisa','Serigrafia','IML'],[
+      ['Identificação','Rótulo, etiqueta, sleeve ou impressão própria do cliente','Impressão direta com tinta especial','Rótulo fundido à embalagem no molde'],
+      ['Ponto forte','Menor custo e menor pedido mínimo','Custo-benefício, dispensa rótulo','Acabamento e alta definição'],
+      ['Atenção','Identificação fica por conta do cliente','Área de impressão limitada','Indicado para agregar valor ao produto']
+    ]]
+  ]},
+  { id:'2-6', t:'Acabamentos IML', b:[
+    ['p','Dentro do IML, a Chamfer trabalha com diferentes acabamentos. Cada um cria uma percepção diferente no ponto de venda.'],
+    ['cards',[
+      {t:'IML Casca',d:'Textura superficial que proporciona aparência mais sofisticada e diferenciada. Sua característica mais marcante é a sensação visual e tátil de textura.',items:['Aparência texturizada','Maior percepção de sofisticação','Diferenciação visual no ponto de venda','Possibilidade de trabalhar com diferentes conceitos gráficos','Pode ajudar a criar uma identidade mais premium']},
+      {t:'IML Liso – Brilho',d:'Superfície visualmente lisa e com maior reflexão de luz. Alternativa versátil para projetos com cores vivas, imagens marcantes e aparência brilhante.',items:['Superfície lisa','Aparência brilhante','Maior destaque das cores','Boa reprodução visual das artes','Aparência limpa e moderna']},
+      {t:'IML Metalizado',d:'Efeito que proporciona aparência semelhante à de uma superfície metálica. Muito utilizado quando o objetivo é criar impacto visual e diferenciação.',items:['Efeito metálico','Alto impacto visual','Percepção de produto diferenciado','Possibilidade de explorar efeitos gráficos','Destaque para determinados elementos da arte']},
+      {t:'IML Termocrômico',d:'Rótulo com elementos que mudam de cor de acordo com a temperatura, criando uma comunicação visual interativa (por exemplo, indicar quando o produto está gelado ou aquecido).',items:['Mudança de cor conforme a temperatura','Efeito visual interativo','Destaque para a embalagem','Indicação visual de uma condição térmica','Maior diferenciação no ponto de venda']}
+    ]],
+    ['note','O efeito metalizado pode ser utilizado de maneira estratégica, não necessariamente cobrindo toda a arte.']
+  ]}
+ ], quiz:[
+  {q:'Quais são os materiais mais utilizados pela Chamfer?',o:['PET e PVC','PP e PEAD','PS e PET','PEBD e PVC'],a:1,e:'Polipropileno (PP) e Polietileno de Alta Densidade (PEAD).'},
+  {q:'Qual material possui excelente comportamento em congelamento intenso?',o:['PEAD','PP','Os dois têm o mesmo desempenho','Nenhum deles'],a:0,e:'O PP também pode ser usado em congelados, desde que o projeto seja adequado.'},
+  {q:'O cliente pergunta se o pote vai ao micro-ondas. O que fazer?',o:['Confirmar que sim, todo PP vai ao micro-ondas','Responder que nenhuma embalagem plástica vai ao micro-ondas','Confirmar a especificação técnica do produto antes de responder','Indicar a versão em PEAD'],a:2,e:'Só embalagens projetadas para essa finalidade suportam micro-ondas.'},
+  {q:'Qual opção de cor permite visualizar o produto acondicionado?',o:['Branco','Preto','Random','Pigmentada'],a:2,e:'Random é o material transparente. O Natural permite visualizar apenas parcialmente.'},
+  {q:'Pelo Decreto nº 12.688/2025, quando as metas de conteúdo reciclado passam a valer para empresas de pequeno e médio porte?',o:['Janeiro de 2026','Julho de 2026','Janeiro de 2027','Julho de 2027'],a:1,e:'Grandes empresas em janeiro de 2026; pequenas e médias em julho de 2026.'},
+  {q:'Em qual processo o rótulo é inserido no molde antes da injeção do plástico?',o:['Serigrafia','Embalagem lisa','In Mold Label (IML)','Sleeve'],a:2,e:'No IML o rótulo se funde à embalagem durante a fabricação.'}
+ ]},
+
+{ id:'3', t:'Portfólio Chamfer', d:'As famílias de produtos e quando recomendar cada uma.', lessons:[
+  { id:'3-0', t:'Objetivo da trilha', b:[
+    ['lead','Ao concluir esta trilha, o colaborador será capaz de identificar cada família de produtos da Chamfer, compreender suas características técnicas, aplicações e diferenciais, além de recomendar a solução mais adequada para cada cliente.'],
+    ['table',['Família','Linha','Capacidades'],[
+      ['1','Potes redondos','220 ml a 3,2 L'],['2','Potes quadrados','130 ml a 500 ml'],['3','Potes rosca','500 ml e 1 L'],
+      ['4','Baldes redondos e retangulares','1,8 L a 18 L'],['5','Frascos','250 ml e 500 ml'],['6','Linha Sorvete','1 L a 2 L'],['7','Linha Exportação','Balde 11,4 L']
+    ]]
+  ]},
+  { id:'3-1', t:'Família 1 – Potes redondos', b:[
+    ['lead','Os potes redondos são uma das linhas mais versáteis da Chamfer. Possuem excelente vedação, ótimo aproveitamento interno e ampla variedade de capacidades, sendo utilizados principalmente pelo mercado alimentício.'],
+    ['p','Sua geometria facilita o envase automático, o empilhamento e a aplicação de diferentes tipos de decoração.'],
+    ['sub','Capacidades'],
+    ['caps',['220 ml','500 ml','750 ml','900 ml','1 L','1,8 L','3,2 L']],
+    ['split',[
+      {t:'Principais características',items:['Formato circular','Excelente vedação','Fácil empilhamento','Alta resistência mecânica','Disponíveis em diversas capacidades','Compatíveis com tampa de encaixe','Produzidos em PP']},
+      {t:'Diferenciais',items:['Grande variedade de modelos','Excelente custo-benefício','Compatibilidade com IML e serigrafia','Boa vedação','Diversas opções de tampas','Ideal para alimentos']}
+    ]]
+  ]},
+  { id:'3-2', t:'Família 2 – Potes quadrados', b:[
+    ['lead','Os potes quadrados foram desenvolvidos para otimizar o aproveitamento de espaço durante o armazenamento e transporte.'],
+    ['p','Seu formato proporciona maior eficiência logística e excelente exposição no ponto de venda.'],
+    ['note','Linha patenteada da Chamfer.'],
+    ['sub','Capacidades'],
+    ['caps',['130 ml','220 ml','500 ml']],
+    ['split',[
+      {t:'Características',items:['Formato quadrado','Melhor aproveitamento de pallets','Maior estabilidade no empilhamento','Excelente área para personalização']},
+      {t:'Diferenciais',items:['Melhor aproveitamento de espaço','Excelente apresentação','Facilidade de empilhamento','Ótima área para rótulos ou IML']}
+    ]]
+  ]},
+  { id:'3-3', t:'Família 3 – Potes rosca', b:[
+    ['lead','Os potes com tampa rosca oferecem um sistema de fechamento por rosqueamento, permitindo abertura e fechamento repetidos sem comprometer a vedação.'],
+    ['p','São ideais para produtos de consumo contínuo.'],
+    ['sub','Capacidades'],
+    ['caps',['500 ml','1 L']],
+    ['split',[
+      {t:'Características',items:['Tampa rosqueável','Fácil abertura','Excelente vedação','Reutilização prática']},
+      {t:'Diferenciais',items:['Facilidade para o consumidor','Maior segurança no fechamento','Excelente experiência de uso']}
+    ]]
+  ]},
+  { id:'3-4', t:'Família 4 – Baldes', b:[
+    ['lead','Os baldes representam uma das linhas mais robustas da Chamfer e são desenvolvidos para aplicações que exigem maior capacidade e resistência.'],
+    ['p','Podem receber alça metálica ou plástica e diversos tipos de personalização.'],
+    ['h','Baldes redondos'],
+    ['caps',['1,8 L','2,2 L','3,2 L','3,6 L','4 L','5 L','10 L','11,4 L','16 L','18 L']],
+    ['h','Baldes retangulares'],
+    ['caps',['3,6 L','5 L','18 L']],
+    ['split',[
+      {t:'Características',items:['Alta resistência','Excelente vedação','Diversas capacidades','Opções de alça','Compatíveis com IML']},
+      {t:'Diferenciais',items:['Grande resistência mecânica','Excelente empilhamento','Alta capacidade','Diversas opções de lacres']}
+    ]]
+  ]},
+  { id:'3-5', t:'Família 5 – Frascos', b:[
+    ['lead','Os frascos foram desenvolvidos para produtos líquidos ou semilíquidos.'],
+    ['p','Seu design facilita o envase e o manuseio pelo consumidor.'],
+    ['sub','Capacidades (exemplos)'],
+    ['caps',['250 ml','500 ml']],
+    ['sub','Diferenciais'],
+    ['ul',['Fácil manuseio','Excelente acabamento','Compatibilidade com diferentes sistemas de fechamento']]
+  ]},
+  { id:'3-6', t:'Família 6 – Linha Sorvete', b:[
+    ['lead','Linha desenvolvida especificamente para fabricantes de sorvetes, congelados e açaí. É uma das principais especialidades da Chamfer.'],
+    ['sub','Capacidades'],
+    ['caps',['1 L','1,5 L','2 L']],
+    ['sub','Diferenciais'],
+    ['ul',['Resistência ao congelamento','Excelente vedação','Alta resistência ao transporte','Possibilidade de cores diferentes para identificar sabores','Personalização de alto impacto']]
+  ]},
+  { id:'3-7', t:'Família 7 – Linha Exportação', b:[
+    ['h','Balde 11,4 L'],
+    ['lead','O Balde 11,4 L foi desenvolvido para atender mercados internacionais e aplicações que exigem elevado desempenho mecânico.'],
+    ['p','É produzido em PEAD e possui características específicas para exportação.'],
+    ['sub','Diferenciais'],
+    ['ul',['Produzido em PEAD','Elevada resistência mecânica','Excelente desempenho em congelamento','Compatível com padrões internacionais','Projetado para transporte de longa distância','Alta resistência ao empilhamento','Lacre de segurança']]
+  ]}
+ ], quiz:[
+  {q:'Qual linha da Chamfer é patenteada?',o:['Potes redondos','Potes quadrados','Frascos','Linha Sorvete'],a:1,e:'Os potes quadrados otimizam o espaço em armazenamento e transporte.'},
+  {q:'Para produtos de consumo contínuo, com abertura e fechamento repetidos, qual família indicar?',o:['Potes rosca','Baldes retangulares','Potes quadrados','Linha Exportação'],a:0,e:'A tampa rosca mantém a vedação mesmo após várias aberturas.'},
+  {q:'Qual é o material do Balde 11,4 L da Linha Exportação?',o:['PP','PEAD','PET','PCR'],a:1,e:'O PEAD garante elevada resistência mecânica e bom desempenho em congelamento.'},
+  {q:'Quais capacidades fazem parte da Linha Sorvete?',o:['130 ml, 220 ml e 500 ml','500 ml e 1 L','1 L, 1,5 L e 2 L','5 L, 10 L e 18 L'],a:2,e:'A linha atende fabricantes de sorvetes, congelados e açaí.'}
+ ]},
+
+{ id:'4', t:'Componentes', d:'Tampas, lacres e alças.', lessons:[
+  { id:'4-1', t:'Tampas', b:[
+    ['lead','As tampas, lacres e alças são fundamentais para garantir segurança, vedação e praticidade de uso das embalagens.'],
+    ['p','A tampa é responsável pela vedação da embalagem e deve ser escolhida conforme o tipo de produto, aplicação e experiência desejada para o consumidor.'],
+    ['cards',[
+      {t:'Tampa alta',d:'Maior altura, mais resistência estrutural e melhor acomodação para determinados produtos.',items:['Baldes','Produtos alimentícios','Produtos químicos']},
+      {t:'Tampa baixa',d:'Perfil reduzido, menor consumo de material e excelente acabamento.',items:['Potes','Conservas','Sorvetes']},
+      {t:'Tampa rosca',d:'Permite abertura e fechamento repetidos. Ideal para produtos de uso contínuo.'},
+      {t:'Tampa de encaixe',d:'Sistema tradicional de pressão.',items:['Sorvetes','Açaí','Conservas','Doces']}
+    ]],
+    ['note','Nos cartões, a lista indica as principais aplicações de cada tampa.']
+  ]},
+  { id:'4-2', t:'Lacres', b:[
+    ['lead','Os lacres têm como principal função demonstrar ao consumidor que a embalagem não foi violada antes da primeira abertura.'],
+    ['p','Também contribuem para a segurança durante o transporte e armazenamento.'],
+    ['table',['Tipo','Como funciona','Aplicações'],[
+      ['Lacre no pote','Integrado ao corpo da embalagem, rompe-se na primeira abertura.','Alimentos, conservas e produtos que exigem evidência de inviolabilidade'],
+      ['Lacre na tampa','Incorporado à tampa, é rompido quando o consumidor realiza a primeira abertura.','Produtos químicos, cosméticos e embalagens alimentícias'],
+      ['Lacre fácil','Abertura mais prática, com menor esforço e melhor experiência do consumidor.','—']
+    ]]
+  ]},
+  { id:'4-3', t:'Alças', b:[
+    ['lead','As alças facilitam o transporte e devem ser selecionadas de acordo com o peso do produto, a aplicação e a experiência desejada.'],
+    ['cards',[
+      {t:'Alça metálica',d:'Alta resistência, suporta cargas elevadas e tem excelente durabilidade.',items:['Baldes de grande capacidade','Tintas','Produtos químicos','Construção civil']},
+      {t:'Alça plástica',d:'Mais leve, excelente acabamento, boa ergonomia e totalmente plástica.',items:['Sorvetes','Açaí','Conservas','Produtos alimentícios']}
+    ]]
+  ]}
+ ], quiz:[
+  {q:'Qual é a principal função do lacre?',o:['Aumentar a capacidade da embalagem','Demonstrar que a embalagem não foi violada antes da primeira abertura','Facilitar o empilhamento','Melhorar a impressão IML'],a:1,e:'Ele também contribui para a segurança no transporte e armazenamento.'},
+  {q:'Um cliente de tintas precisa de alça para um balde de grande capacidade. Qual indicar?',o:['Alça plástica','Alça metálica','Nenhuma, baldes não usam alça','Qualquer uma'],a:1,e:'A alça metálica suporta cargas elevadas.'},
+  {q:'Como funciona a tampa de encaixe?',o:['Por rosqueamento','Por sistema tradicional de pressão','Por solda térmica','Por lacre metálico'],a:1,e:'É muito usada em sorvetes, açaí, conservas e doces.'}
+ ]},
+
+{ id:'5', t:'Controle de Qualidade', d:'Inspeção, segurança de alimentos, BPF e requisitos legais.', lessons:[
+  { id:'5-1', t:'O que é o Controle de Qualidade', b:[
+    ['lead','O Controle de Qualidade é o conjunto de atividades que garante que cada embalagem produzida pela Chamfer atenda às especificações técnicas, aos requisitos do cliente e às normas aplicáveis.'],
+    ['p','A qualidade está presente em todas as etapas do processo produtivo, desde o recebimento da matéria-prima até a expedição do produto acabado.'],
+    ['sub','Nosso objetivo é entregar embalagens que apresentem'],
+    ['ul',['Dimensões conforme projeto','Excelente vedação','Resistência mecânica adequada','Acabamento uniforme','Segurança para a aplicação prevista','Padronização entre os lotes']],
+    ['quote','A qualidade não é responsabilidade apenas do setor de Qualidade, mas de todos os colaboradores da empresa.']
+  ]},
+  { id:'5-2', t:'Processo de inspeção', b:[
+    ['p','Durante a fabricação, diversos controles são realizados para assegurar que o produto esteja conforme as especificações.'],
+    ['flow',['Matéria-prima','Em processo','Inspeção final','Expedição']],
+    ['h','1. Inspeção de matéria-prima'],
+    ['p','Antes do início da produção, são verificadas as matérias-primas utilizadas. São avaliados aspectos como:'],
+    ['ul',['Identificação do material','Cor','Condição da embalagem do fornecedor','Conformidade com as especificações internas']],
+    ['h','2. Inspeção em processo'],
+    ['p','Durante a produção, amostras são retiradas periodicamente para verificar:'],
+    ['ul',['Peso da embalagem','Dimensões','Espessura','Vedação','Encaixe da tampa','Qualidade da decoração (quando aplicável)','Presença de defeitos visuais']],
+    ['note','Caso seja identificada alguma não conformidade, o processo é interrompido para ajustes antes da continuidade da produção.'],
+    ['h','3. Inspeção final'],
+    ['p','Antes da liberação do lote para expedição, é realizada uma avaliação final para confirmar que o produto atende aos requisitos estabelecidos. São observados:'],
+    ['ul',['Aspecto visual','Integridade da embalagem','Funcionamento do sistema de fechamento','Identificação do lote','Quantidade produzida']],
+    ['p','Somente após essa aprovação o lote é liberado para expedição.']
+  ]},
+  { id:'5-3', t:'Segurança de alimentos e rastreabilidade', b:[
+    ['h','Segurança de alimentos'],
+    ['p','As embalagens utilizadas para alimentos desempenham um papel fundamental na preservação da qualidade do produto. Por isso, a Chamfer desenvolve suas embalagens seguindo requisitos técnicos e legais voltados para aplicações alimentícias.'],
+    ['sub','Uma embalagem segura deve'],
+    ['ul',['Proteger o alimento contra contaminações','Manter suas características durante o armazenamento e transporte','Não transferir substâncias que possam comprometer a segurança do alimento quando utilizada conforme sua finalidade']],
+    ['p','Além disso, o processo produtivo deve seguir práticas que reduzam riscos de contaminação física, química e biológica.'],
+    ['h','Rastreabilidade'],
+    ['p','A rastreabilidade permite identificar todo o histórico de produção de uma embalagem. Por meio das informações registradas, é possível saber:'],
+    ['ul',['Qual matéria-prima foi utilizada','Em qual máquina a embalagem foi produzida','Quando ocorreu a fabricação','Qual lote foi produzido','Quais inspeções foram realizadas']],
+    ['p','Esse controle proporciona maior segurança, facilita investigações em caso de não conformidades e contribui para a melhoria contínua dos processos.']
+  ]},
+  { id:'5-4', t:'Certificações', b:[
+    ['lead','As certificações demonstram o compromisso da empresa com a qualidade, a segurança e a melhoria contínua.'],
+    ['p','Para cada certificação, este módulo apresenta o objetivo, os benefícios para os clientes, os requisitos principais e como cada colaborador contribui para sua manutenção.'],
+    ['h','FSSC 22000'],
+    ['p','A FSSC 22000 é um sistema de gestão da segurança de alimentos reconhecido internacionalmente e aplicável a organizações da cadeia alimentícia, incluindo fabricantes de embalagens para contato com alimentos.'],
+    ['sub','Ela estabelece requisitos relacionados a'],
+    ['chips',['Controle de perigos','Boas práticas de fabricação','Gestão de riscos','Rastreabilidade','Melhoria contínua']]
+  ]},
+  { id:'5-5', t:'Boas Práticas de Fabricação (BPF)', b:[
+    ['lead','As Boas Práticas de Fabricação são procedimentos adotados para garantir que os produtos sejam fabricados de forma segura e padronizada.'],
+    ['p','Na rotina da Chamfer, isso inclui:'],
+    ['cards',[
+      {t:'Higiene pessoal',items:['Lavar corretamente as mãos','Utilizar uniformes limpos','Manter boa apresentação pessoal','Seguir os procedimentos internos de higiene']},
+      {t:'Organização do ambiente',items:['Manter o posto de trabalho limpo','Evitar acúmulo de materiais desnecessários','Armazenar corretamente matérias-primas e produtos acabados']},
+      {t:'Cuidados durante a produção',items:['Seguir as instruções de trabalho','Utilizar equipamentos corretamente','Comunicar imediatamente qualquer não conformidade','Evitar contaminações']},
+      {t:'Controle de materiais',items:['Identificar corretamente os lotes','Armazenar produtos conforme orientações internas','Garantir a segregação de materiais quando necessário']}
+    ]]
+  ]},
+  { id:'5-6', t:'Requisitos da ANVISA', b:[
+    ['lead','As embalagens destinadas ao contato com alimentos devem atender à legislação sanitária brasileira.'],
+    ['p','A ANVISA estabelece requisitos para que materiais destinados ao contato com alimentos sejam seguros quando utilizados conforme sua finalidade. Esses requisitos abrangem aspectos como:'],
+    ['ul',['Utilização de matérias-primas autorizadas','Controle de substâncias que possam migrar para o alimento','Adequação do material ao tipo de alimento e às condições de uso','Boas práticas de fabricação','Rastreabilidade dos materiais utilizados']],
+    ['p','O objetivo é garantir que a embalagem preserve a qualidade do alimento sem representar riscos ao consumidor.'],
+    ['note','A embalagem deve ser utilizada conforme a aplicação para a qual foi projetada. Sempre que houver dúvidas sobre uma aplicação específica, consulte a Engenharia ou o setor de Qualidade.']
+  ]}
+ ], quiz:[
+  {q:'De quem é a responsabilidade pela qualidade na Chamfer?',o:['Somente do setor de Qualidade','Somente da Engenharia','De todos os colaboradores','Do cliente'],a:2,e:'A qualidade está presente em todas as etapas do processo.'},
+  {q:'O que acontece quando uma não conformidade é identificada na inspeção em processo?',o:['O lote é enviado e corrigido depois','O processo é interrompido para ajustes antes de continuar','A produção segue e o lote é descartado no fim','Nada, apenas se registra'],a:1,e:'A produção só continua após os ajustes.'},
+  {q:'Qual informação a rastreabilidade permite identificar?',o:['A margem de lucro do pedido','Em qual máquina a embalagem foi produzida','O nome do consumidor final','O preço da matéria-prima'],a:1,e:'Também a matéria-prima, a data, o lote e as inspeções realizadas.'},
+  {q:'Há dúvida sobre uma aplicação específica de embalagem para alimentos. Quem consultar?',o:['O cliente','O fornecedor de resina','A Engenharia ou o setor de Qualidade','Ninguém, a embalagem serve para qualquer uso'],a:2,e:'A embalagem deve ser usada conforme a aplicação para a qual foi projetada.'}
+ ]}
+];
+
+/* ---------- estado ---------- */
+const KEY='chamfer-academy-v1';
+let state={done:{},answers:{}};
+try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&s.done)state=Object.assign(state,s)}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+
+const ITEMS=[];
+COURSE.forEach(m=>{m.lessons.forEach(l=>ITEMS.push({key:'l'+l.id,mod:m,lesson:l}));ITEMS.push({key:'q'+m.id,mod:m,quiz:true})});
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const words=b=>JSON.stringify(b).split(/\s+/).length;
+const mins=l=>Math.max(2,Math.round(words(l.b)/180));
+
+function block(b){
+  const [k,v]=b;
+  switch(k){
+    case 'p':return `<p>${esc(v)}</p>`;
+    case 'lead':return `<p class="lead">${esc(v)}</p>`;
+    case 'h':return `<h3>${esc(v)}</h3>`;
+    case 'sub':return `<h4>${esc(v)}</h4>`;
+    case 'ul':return `<ul class="b">${v.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
+    case 'chips':return `<ul class="chips">${v.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
+    case 'chips-big':return `<ul class="chips big">${v.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
+    case 'caps':return `<ul class="chips caps" aria-label="Capacidades">${v.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
+    case 'quote':return `<blockquote>${esc(v)}</blockquote>`;
+    case 'note':return `<div class="note"><strong>Atenção</strong><span>${esc(v)}</span></div>`;
+    case 'flow':return `<ol class="flow">${v.map(x=>`<li><span>${esc(x)}</span></li>`).join('')}</ol>`;
+    case 'timeline':return `<ol class="timeline">${v.map(([a,b])=>`<li><b>${esc(a)}</b><span>${esc(b)}</span></li>`).join('')}</ol>`;
+    case 'cards':return `<div class="cards">${v.map(c=>`<div class="card"><h5>${esc(c.t)}</h5>${c.d?`<p>${esc(c.d)}</p>`:''}${c.items?`<ul>${c.items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}</div>`).join('')}</div>`;
+    case 'split':return `<div class="cards">${v.map(c=>`<div class="card"><h5>${esc(c.t)}</h5><ul>${c.items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`).join('')}</div>`;
+    case 'swatch':return `<h3 class="sw"><i class="sw-${v.sw}" aria-hidden="true"></i><span>${esc(v.t)}</span></h3><p>${esc(v.d)}</p>`;
+    case 'table':{const [h,rows]=[v,b[2]];return `<div class="tbl"><table><thead><tr>${h.map(x=>`<th>${esc(x)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(x=>`<td>${esc(x)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
+  }
+  return '';
+}
+
+/* ---------- navegação lateral ---------- */
+const side=document.getElementById('side'),main=document.getElementById('main');
+function modCount(m){const keys=[...m.lessons.map(l=>'l'+l.id),'q'+m.id];return [keys.filter(k=>state.done[k]).length,keys.length]}
+function renderSide(cur){
+  side.innerHTML='<h2>Conteúdo da trilha</h2>'+COURSE.map(m=>{
+    const [d,t]=modCount(m);
+    return `<div class="mod"><button class="mod-h" data-go="l${m.lessons[0].id}"><span class="mod-n">${m.id.padStart(2,'0')}</span><span class="mod-t">${esc(m.t)}</span><span class="mod-c">${d}/${t}</span></button>
+    <ul class="les">${m.lessons.map(l=>li('l'+l.id,esc(l.t))).join('')}${li('q'+m.id,'<em class="quiz-i">Revisão</em> do módulo')}</ul></div>`;
+  }).join('');
+  function li(k,label){return `<li class="${state.done[k]?'done':''}"><button data-go="${k}" ${k===cur?'aria-current="true"':''}><span class="dot" aria-hidden="true"></span><span>${label}</span></button></li>`}
+}
+function renderProgress(){
+  const total=ITEMS.length,d=ITEMS.filter(i=>state.done[i.key]).length,p=Math.round(d/total*100);
+  document.getElementById('progFill').style.width=p+'%';
+  document.getElementById('progTxt').textContent=p+'% concluído';
+}
+
+/* ---------- telas ---------- */
+function ring(d,t){const r=18,c=2*Math.PI*r,p=t?d/t:0;return `<svg class="ring" viewBox="0 0 44 44" aria-label="${d} de ${t} concluídas"><circle class="bg" cx="22" cy="22" r="${r}"/><circle class="fg" cx="22" cy="22" r="${r}" stroke-dasharray="${c*p} ${c}"/><text x="22" y="26" text-anchor="middle">${d}/${t}</text></svg>`}
+function renderHome(){
+  const next=ITEMS.find(i=>!state.done[i.key])||ITEMS[0];
+  const started=ITEMS.some(i=>state.done[i.key]);
+  const nL=COURSE.reduce((a,m)=>a+m.lessons.length,0),nMin=COURSE.reduce((a,m)=>a+m.lessons.reduce((x,l)=>x+mins(l),0),0);
+  main.innerHTML=`<section class="hero"><div class="eb">Trilha de integração</div><h1>Bem-vindo à Chamfer Academy</h1>
+    <p>Conheça a Chamfer por dentro: nossa história, as matérias-primas, as famílias de produtos, os componentes e o controle de qualidade. Cada módulo termina com uma revisão rápida.</p>
+    <div class="stats"><div><b>${COURSE.length}</b>módulos</div><div><b>${nL}</b>aulas</div><div><b>~${nMin} min</b>de leitura</div></div>
+    <button class="btn cta" data-go="${next.key}">${started?'Continuar de onde parei':'Começar a trilha'}</button></section>
+    <div class="mods">${COURSE.map(m=>{const [d,t]=modCount(m);return `<button class="mcard" data-go="l${m.lessons[0].id}"><span class="n">${m.id.padStart(2,'0')}</span><span><span class="h">${esc(m.t)}</span><span class="p">${esc(m.d)} ${m.lessons.length} aulas.</span></span>${ring(d,t)}</button>`}).join('')}</div>`;
+  renderSide(null);
+}
+function renderItem(idx){
+  const it=ITEMS[idx],m=it.mod,prev=ITEMS[idx-1],next=ITEMS[idx+1];
+  const crumb=`<div class="crumb"><b>Módulo ${m.id.padStart(2,'0')}</b> · ${esc(m.t)}</div>`;
+  let body;
+  if(it.quiz){
+    body=`${crumb}<article class="lesson"><h1>Revisão do módulo</h1><div class="meta">${m.quiz.length} perguntas · escolha uma alternativa em cada</div>
+    ${m.quiz.map((q,i)=>quizQ(m,q,i)).join('')}<p class="score" id="score"></p></article>`;
+  }else{
+    const l=it.lesson;
+    body=`${crumb}<article class="lesson"><h1>${esc(l.t)}</h1><div class="meta">Leitura de ~${mins(l)} min</div>${l.b.map(block).join('')}</article>`;
+  }
+  const done=!!state.done[it.key];
+  main.innerHTML=body+`<div class="foot">
+    <button class="btn" ${prev?`data-go="${prev.key}"`:'data-go="home"'}>← ${prev?'Anterior':'Início'}</button>
+    <span class="spacer"></span>
+    ${it.quiz?'':`<button class="btn ${done?'ok':''}" id="markBtn">${done?'Aula concluída ✓':'Marcar como concluída'}</button>`}
+    <button class="btn primary" ${next?`data-go="${next.key}" data-complete="1"`:'data-go="home"'}>${next?'Próxima →':'Finalizar trilha'}</button></div>`;
+  if(it.quiz)updateScore(m);
+  renderSide(it.key);
+  const mb=document.getElementById('markBtn');
+  if(mb)mb.onclick=()=>{state.done[it.key]=!state.done[it.key];save();renderItem(idx);renderProgress()};
+}
+function quizQ(m,q,i){
+  const k=m.id+'-'+i,ans=state.answers[k];
+  const opts=q.o.map((o,j)=>{let c='opt';if(ans!=null){if(j===q.a)c+=' right';else if(j===ans)c+=' wrong'}
+    return `<button class="${c}" data-q="${k}" data-j="${j}" ${ans!=null?'disabled':''}>${esc(o)}</button>`}).join('');
+  const fb=ans==null?'':`<p class="exp">${ans===q.a?'<b>Correto.</b> ':'<b>Resposta certa destacada em verde.</b> '}${esc(q.e)}</p>`;
+  return `<div class="q"><h5><small>Pergunta ${i+1}</small>${esc(q.q)}</h5><div class="opts">${opts}</div>${fb}</div>`;
+}
+function updateScore(m){
+  const n=m.quiz.length,ans=m.quiz.map((q,i)=>state.answers[m.id+'-'+i]);
+  const answered=ans.filter(a=>a!=null).length,right=m.quiz.filter((q,i)=>ans[i]===q.a).length;
+  const el=document.getElementById('score');if(!el)return;
+  if(answered===n){
+    el.innerHTML=`Você acertou ${right} de ${n}. <button class="btn" id="retry" style="margin-left:8px">Refazer revisão</button>`;
+    document.getElementById('retry').onclick=()=>{m.quiz.forEach((q,i)=>delete state.answers[m.id+'-'+i]);delete state.done['q'+m.id];save();route();renderProgress()};
+  } else el.textContent=answered?`${answered} de ${n} respondidas`:'';
+}
+
+/* ---------- rotas ---------- */
+function route(){
+  const h=location.hash.slice(1);const idx=ITEMS.findIndex(i=>i.key===h);
+  if(idx<0)renderHome();else renderItem(idx);
+}
+function go(k){
+  closeMenu();
+  if(k==='home'){history.replaceState(null,'',location.pathname+location.search);renderHome()}
+  else if(location.hash.slice(1)===k)route();else location.hash=k;
+  window.scrollTo({top:0});
+}
+document.addEventListener('click',e=>{
+  const q=e.target.closest('[data-q]');
+  if(q){const k=q.dataset.q,mid=k.split('-')[0];state.answers[k]=+q.dataset.j;
+    const m=COURSE.find(x=>x.id===mid);if(m.quiz.every((_,i)=>state.answers[mid+'-'+i]!=null))state.done['q'+mid]=true;
+    save();const y=window.scrollY;route();window.scrollTo({top:y});renderProgress();return}
+  const g=e.target.closest('[data-go]');if(!g)return;
+  if(g.dataset.complete){const cur=location.hash.slice(1);if(cur.startsWith('l')){state.done[cur]=true;save();renderProgress()}}
+  go(g.dataset.go);
+});
+window.addEventListener('hashchange',route);
+document.getElementById('homeBtn').onclick=()=>go('home');
+
+/* menu móvel */
+const menuBtn=document.getElementById('menuBtn'),scrim=document.getElementById('scrim');
+function closeMenu(){side.classList.remove('open');scrim.classList.remove('open');menuBtn.setAttribute('aria-expanded','false')}
+menuBtn.onclick=()=>{const o=!side.classList.contains('open');side.classList.toggle('open',o);scrim.classList.toggle('open',o);menuBtn.setAttribute('aria-expanded',String(o))};
+scrim.onclick=closeMenu;
+
+route();renderProgress();
+</script>
+</body>
+</html>
