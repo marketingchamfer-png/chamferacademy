@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light only">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Chamfer Academy</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -23,25 +24,8 @@
   --stage-1:#FFFFFF; --stage-2:#E4E4E8;
   --f-display:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter','Segoe UI',system-ui,sans-serif;
   --f-body:-apple-system,BlinkMacSystemFont,'SF Pro Text','Inter','Segoe UI',system-ui,sans-serif;
-  --side:272px;
+  --side:272px; color-scheme:light;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0C0C0E; --light:#2A2A2F; --sheet:#161618; --panel:#1F1F22; --glass:rgba(30,30,33,.62); --glass-line:rgba(255,255,255,.08);
-  --ink:#F5F5F7; --ink-2:#A1A1A6; --ink-3:#8E8E93; --line:rgba(255,255,255,.09);
-  --brand:#8DB4DE; --brand-hi:#B5D0EC; --brand-soft:#16243A; --on-brand:#0A1A2E;
-  --accent:#F5A800; --accent-ink:#F5B829; --accent-soft:#2A2210;
-  --good:#30D158; --good-soft:#0F2A16; --bad:#FF6961; --bad-soft:#3A1614;
-  --sh-1:0 1px 2px rgba(0,0,0,.4); --sh-2:0 20px 50px -12px rgba(0,0,0,.7); --sh-3:0 40px 90px -20px rgba(0,0,0,.8);
-  --stage-1:#3A3A40; --stage-2:#121214; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#0C0C0E; --light:#2A2A2F; --sheet:#161618; --panel:#1F1F22; --glass:rgba(30,30,33,.62); --glass-line:rgba(255,255,255,.08);
-  --ink:#F5F5F7; --ink-2:#A1A1A6; --ink-3:#8E8E93; --line:rgba(255,255,255,.09);
-  --brand:#8DB4DE; --brand-hi:#B5D0EC; --brand-soft:#16243A; --on-brand:#0A1A2E;
-  --accent:#F5A800; --accent-ink:#F5B829; --accent-soft:#2A2210;
-  --good:#30D158; --good-soft:#0F2A16; --bad:#FF6961; --bad-soft:#3A1614;
-  --sh-1:0 1px 2px rgba(0,0,0,.4); --sh-2:0 20px 50px -12px rgba(0,0,0,.7); --sh-3:0 40px 90px -20px rgba(0,0,0,.8);
-  --stage-1:#3A3A40; --stage-2:#121214; color-scheme:dark}
-
 *{box-sizing:border-box}
 html{background:var(--bg)}
 /* Luz de soft-box: brilho largo vindo do alto sobre o cinza fosco */
@@ -196,7 +180,10 @@ td:first-child{font-weight:600;color:var(--ink)}
 .opt.wrong{background:var(--bad-soft);color:var(--bad);box-shadow:inset 0 0 0 1.5px var(--bad)}
 .opt[disabled]{cursor:default}
 .exp{margin:14px 0 0;font-size:15px;color:var(--ink-2)}
-.score{font-weight:600;color:var(--ink);margin:8px 0 0}
+.score{font-weight:500;color:var(--ink);margin:20px 0 0;line-height:1.6}
+.score .btn{margin-left:8px;margin-top:8px}
+.pass,.fail{display:inline-block;font-size:13px;font-weight:600;border-radius:999px;padding:3px 12px;margin-right:8px}
+.pass{background:var(--good-soft);color:var(--good)}.fail{background:var(--bad-soft);color:var(--bad)}
 
 /* Conclusão */
 .finish{position:relative;padding:48px 0 28px;max-width:860px;overflow:hidden}
@@ -525,7 +512,8 @@ const COURSE = [
  ], quiz:[
   {q:'Qual é a principal função do lacre?',o:['Aumentar a capacidade da embalagem','Demonstrar que a embalagem não foi violada antes da primeira abertura','Facilitar o empilhamento','Melhorar a impressão IML'],a:1,e:'Ele também contribui para a segurança no transporte e armazenamento.'},
   {q:'Um cliente de tintas precisa de alça para um balde de grande capacidade. Qual indicar?',o:['Alça plástica','Alça metálica','Nenhuma, baldes não usam alça','Qualquer uma'],a:1,e:'A alça metálica suporta cargas elevadas.'},
-  {q:'Como funciona a tampa de encaixe?',o:['Por rosqueamento','Por sistema tradicional de pressão','Por solda térmica','Por lacre metálico'],a:1,e:'É muito usada em sorvetes, açaí, conservas e doces.'}
+  {q:'Como funciona a tampa de encaixe?',o:['Por rosqueamento','Por sistema tradicional de pressão','Por solda térmica','Por lacre metálico'],a:1,e:'É muito usada em sorvetes, açaí, conservas e doces.'},
+  {q:'Qual tampa permite abertura e fechamento repetidos e é ideal para produtos de uso contínuo?',o:['Tampa alta','Tampa baixa','Tampa rosca','Tampa de encaixe'],a:2,e:'A tampa rosca mantém a vedação mesmo após várias aberturas.'}
  ]},
 
 { id:'5', t:'Controle de Qualidade', d:'Inspeção, segurança de alimentos, BPF e requisitos legais.', lessons:[
@@ -600,6 +588,9 @@ const KEY='chamfer-academy-v1';
 let state={done:{},answers:{},scores:{}};
 try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&s.done)state=Object.assign(state,s)}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+const PASS=.7;
+const need=m=>Math.ceil(m.quiz.length*PASS-1e-9);
+COURSE.forEach(m=>{if(state.done['q'+m.id]&&!((state.scores[m.id]||0)>=need(m))){delete state.done['q'+m.id];m.quiz.forEach((_,i)=>delete state.answers[m.id+'-'+i])}});
 
 const ITEMS=[];
 COURSE.forEach(m=>{m.lessons.forEach(l=>ITEMS.push({key:'l'+l.id,mod:m,lesson:l}));ITEMS.push({key:'q'+m.id,mod:m,quiz:true})});
@@ -710,7 +701,7 @@ function renderItem(idx){
   const crumb=`<div class="crumb"><b>Módulo ${m.id.padStart(2,'0')}</b> · ${esc(m.t)}</div>`;
   let body;
   if(it.quiz){
-    body=`${crumb}<article class="lesson"><h1>Revisão do módulo</h1><div class="meta">${m.quiz.length} perguntas · responda todas para liberar o próximo módulo</div>
+    body=`${crumb}<article class="lesson"><h1>Revisão do módulo</h1><div class="meta">${m.quiz.length} perguntas · acerte pelo menos 70% para liberar o próximo módulo</div>
     ${m.quiz.map((q,i)=>quizQ(m,q,i)).join('')}<p class="score" id="score"></p></article>`;
   }else{
     const l=it.lesson;
@@ -727,7 +718,7 @@ function renderItem(idx){
   if(!done&&!it.quiz)watchEnd(it);
 }
 function hintText(it,done){
-  if(it.quiz)return done?'Revisão concluída':'Responda todas as perguntas para avançar';
+  if(it.quiz)return done?'Revisão aprovada':`Acerte pelo menos ${need(it.mod)} de ${it.mod.quiz.length} para avançar`;
   return done?'Aula concluída':'Role até o fim da aula para liberar a próxima';
 }
 function unlock(it){
@@ -748,10 +739,10 @@ function watchEnd(it){
   setTimeout(check,250);
 }
 function quizQ(m,q,i){
-  const k=m.id+'-'+i,ans=state.answers[k];
-  const opts=q.o.map((o,j)=>{let c='opt';if(ans!=null){if(j===q.a)c+=' right';else if(j===ans)c+=' wrong'}
+  const k=m.id+'-'+i,ans=state.answers[k],passed=!!state.done['q'+m.id];
+  const opts=q.o.map((o,j)=>{let c='opt';if(ans!=null){if(j===q.a&&(ans===q.a||passed))c+=' right';else if(j===ans)c+=' wrong'}
     return `<button class="${c}" data-q="${k}" data-j="${j}" ${ans!=null?'disabled':''}>${esc(o)}</button>`}).join('');
-  const fb=ans==null?'':`<p class="exp">${ans===q.a?'<b>Correto.</b> ':'<b>Resposta certa destacada em verde.</b> '}${esc(q.e)}</p>`;
+  const fb=ans==null?'':ans===q.a?`<p class="exp"><b>Correto.</b> ${esc(q.e)}</p>`:passed?`<p class="exp"><b>Resposta certa destacada em verde.</b> ${esc(q.e)}</p>`:'<p class="exp"><b>Incorreto.</b></p>';
   return `<div class="q"><h5><small>Pergunta ${i+1}</small>${esc(q.q)}</h5><div class="opts">${opts}</div>${fb}</div>`;
 }
 function updateScore(m){
@@ -759,7 +750,9 @@ function updateScore(m){
   const answered=ans.filter(a=>a!=null).length,right=m.quiz.filter((q,i)=>ans[i]===q.a).length;
   const el=document.getElementById('score');if(!el)return;
   if(answered===n){
-    el.innerHTML=`Você acertou ${right} de ${n}. <button class="btn" id="retry" style="margin-left:8px">Refazer revisão</button>`;
+    const pct=Math.round(right/n*100),ok=right>=need(m);
+    el.innerHTML=ok?`<span class="pass">Aprovado</span> Você acertou ${right} de ${n} (${pct}%). <button class="btn" id="retry">Refazer revisão</button>`
+      :`<span class="fail">Não aprovado</span> Você acertou ${right} de ${n} (${pct}%). É preciso acertar pelo menos 70% (${need(m)} de ${n}) para avançar. Releia as aulas do módulo e refaça a revisão. <button class="btn primary" id="retry">Refazer revisão</button>`;
     document.getElementById('retry').onclick=()=>{m.quiz.forEach((q,i)=>delete state.answers[m.id+'-'+i]);save();route();renderProgress()};
   } else el.textContent=`${answered} de ${n} respondidas`;
 }
@@ -825,8 +818,8 @@ document.addEventListener('click',e=>{
   if(q){const k=q.dataset.q,mid=k.split('-')[0];state.answers[k]=+q.dataset.j;
     const m=COURSE.find(x=>x.id===mid);
     if(m.quiz.every((_,i)=>state.answers[mid+'-'+i]!=null)){
-      state.done['q'+mid]=true;
-      state.scores[mid]=m.quiz.filter((qq,i)=>state.answers[mid+'-'+i]===qq.a).length;
+      const right=m.quiz.filter((qq,i)=>state.answers[mid+'-'+i]===qq.a).length;
+      if(right>=need(m)){state.done['q'+mid]=true;state.scores[mid]=Math.max(right,state.scores[mid]||0)}
     }
     save();const y=window.scrollY;route();window.scrollTo({top:y});renderProgress();return}
   const g=e.target.closest('[data-go]');if(!g||g.disabled)return;
